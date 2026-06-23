@@ -42,8 +42,8 @@ pipenv run pytest .
 ## Architecture & Key Components
 
 ### Core Pipeline Flow
-1. **Web Interface** (`app.py`): Flask server handling UI and API endpoints
-2. **Main Logic** (`ice_breaker.py`): Orchestrates the entire ice breaker generation pipeline
+1. **Web Interface** (`app.py`): Flask server. Exposes `GET /` (renders `index.html`) and a single `POST /process` endpoint that takes a form field `name` and returns JSON with `summary_and_facts`, `interests`, `ice_breakers`, and `picture_url`. The entire pipeline is driven by a person's name.
+2. **Main Logic** (`ice_breaker.py`): `ice_break_with(name)` is the single orchestration function that runs the whole pipeline. There is no CLI entry point — `if __name__ == "__main__"` is just `pass`, so the only real entry is through Flask.
 3. **Agent System**: Profile lookup agents for LinkedIn and Twitter discovery
 4. **Data Extraction**: Third-party integrations for scraping social media data
 5. **AI Processing**: LangChain chains for generating summaries, interests, and ice breakers
@@ -61,7 +61,7 @@ pipenv run pytest .
 
 - **third_parties/**: External API integrations
   - LinkedIn scraping via Scrapin.io API
-  - Twitter data via Twitter API (with mock fallback)
+  - Twitter data via Twitter API. NOTE: `ice_breaker.py` calls `scrape_user_tweets_mock` by default — the real `scrape_user_tweets` is imported but unused. To use live Twitter data, swap that call in `ice_break_with`.
 
 - **tools/**: Utility functions for web search using Tavily
 
@@ -83,7 +83,7 @@ Optional LangSmith tracing:
 ## Development Notes
 
 - The application uses GPT-4o-mini for agents and GPT-3.5-turbo for chains
-- Twitter integration has a mock implementation (`scrape_user_tweets_mock`) for testing
+- Twitter integration uses the mock implementation (`scrape_user_tweets_mock`) as the active default path in `ice_breaker.py`, not just for testing — live Twitter scraping requires editing the call
 - Flask runs in debug mode by default on host 0.0.0.0
 - LangChain agents use verbose mode for debugging
 - No unit tests are currently implemented despite pytest being mentioned
