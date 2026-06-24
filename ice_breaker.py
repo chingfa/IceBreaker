@@ -18,8 +18,8 @@ from output_parsers import (
 def ice_break_with(
     name: str,
 ) -> Tuple[Summary, TopicOfInterest, IceBreaker, str]:
-    linkedin_url = linkedin_lookup_agent(name=name)
-    linkedin_data = scrape_linkedin_profile(linkedin_profile_url=linkedin_url)
+    linkedin_link = linkedin_lookup_agent(name=name)
+    linkedin_data = scrape_linkedin_profile(linkedin_profile_url=linkedin_link)
 
     twitter_username = twitter_lookup_agent(name=name)
     tweets = scrape_user_tweets_mock(username=twitter_username)
